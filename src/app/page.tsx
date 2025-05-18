@@ -3,11 +3,48 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { LoaderCircle } from "lucide-react";
+import { ArrowUpRight, Copy, LoaderCircle } from "lucide-react";
+import { toast } from "sonner";
+import { z } from "zod";
+
+const linkSchema = z.string().url();
 
 export default function Home() {
-	const [linkInput, setLinkInput] = useState("");
+	const [linkInput, setLinkInput] = useState<z.infer<typeof linkSchema>>("");
 	const [isLoading, setIsLoading] = useState(false);
+	const [shortenedLink, setShortenedLink] = useState("");
+
+	const handleSubmit = async () => {
+		try {
+			setIsLoading(true);
+
+			if (linkInput === "") {
+				toast.warning("Please enter a link!");
+				return;
+			}
+
+			if (!linkSchema.safeParse(linkInput).success) {
+				toast.error("Please enter a valid link!");
+				return;
+			}
+
+			const response = await fetch("http://localhost:8000/links", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ link: linkInput }),
+			});
+			const data = await response.json();
+			console.log(data);
+
+			setShortenedLink(`${window.location.origin}/${data.short}`);
+		} catch (err) {
+			// toast.error(err.message);
+		} finally {
+			setIsLoading(false);
+		}
+	};
 
 	return (
 		<main className="mt-20">
@@ -27,6 +64,7 @@ export default function Home() {
 				disabled={isLoading}
 			/>
 			<Button
+				onClick={handleSubmit}
 				type="button"
 				className="mt-4 w-full cursor-pointer disabled:cursor-default"
 				disabled={isLoading}
@@ -37,6 +75,30 @@ export default function Home() {
 					"Shorten it!"
 				)}
 			</Button>
+			{shortenedLink && (
+				<div className="flex gap-2 mt-16">
+					<span className="flex-1 truncate border-border border rounded-sm py-1 px-3 font-mono">
+						{shortenedLink}
+					</span>
+					<Button
+						variant="outline"
+						size="icon"
+						onClick={() => window.open(shortenedLink, "_blank")}
+					>
+						<ArrowUpRight />
+					</Button>
+					<Button
+						variant="outline"
+						size="icon"
+						onClick={() => {
+							navigator.clipboard.writeText(shortenedLink);
+							toast.success("Link copied to clipboard!");
+						}}
+					>
+						<Copy />
+					</Button>
+				</div>
+			)}
 		</main>
 	);
 }
