@@ -29,16 +29,24 @@ export default function Home() {
 				return;
 			}
 
-			const response = await fetch("http://localhost:8000/links", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
+			const response = await fetch(
+				`${process.env.NEXT_PUBLIC_SERVER_URL}links`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({ link: linkInput }),
 				},
-				body: JSON.stringify({ link: linkInput }),
-			});
+			);
 			const data = await response.json();
 
-			setShortenedLink(`${window.location.origin}/${data.short}`);
+			setShortenedLink(
+				`${
+					// biome-ignore lint/style/noNonNullAssertion: <explanation>
+					process.env.NEXT_PUBLIC_WEBSITE_URL!
+				}/${data.short}`,
+			);
 
 			confetti({
 				particleCount: 200,

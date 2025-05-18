@@ -19,7 +19,7 @@ export default function RedirectPage() {
 		const fetchLink = async () => {
 			try {
 				const response = await fetch(
-					`http://localhost:8000/links/${params.short}`,
+					`${process.env.NEXT_PUBLIC_SERVER_URL}links/${params.short}`,
 				);
 				if (!response.ok) {
 					throw new Error("Link not found!");
