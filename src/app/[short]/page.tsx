@@ -2,6 +2,7 @@
 
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import axios from "axios";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -21,13 +22,10 @@ export default function RedirectPage() {
 	useEffect(() => {
 		const fetchLink = async () => {
 			try {
-				const response = await fetch(
+				const response = await axios.get(
 					`${serverUrl}links/${params.short}`,
 				);
-				if (!response.ok) {
-					throw new Error("Link not found!");
-				}
-				const data: LinkResponse = await response.json();
+				const data: LinkResponse = response.data;
 				window.location.href = data.link;
 			} catch (err) {
 				setError(

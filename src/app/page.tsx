@@ -1,4 +1,5 @@
 "use client";
+import axios from "axios";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -36,14 +37,10 @@ export default function Home() {
 				return;
 			}
 
-			const response = await fetch(`${serverUrl}links`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ link: linkInput }),
+			const response = await axios.post(`${serverUrl}links`, {
+				link: linkInput,
 			});
-			const data = await response.json();
+			const data = response.data;
 
 			setShortenedLink(`${websiteUrl}/${data.short}`);
 
