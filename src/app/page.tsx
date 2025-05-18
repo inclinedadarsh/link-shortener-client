@@ -25,7 +25,8 @@ export default function Home() {
 		try {
 			setIsLoading(true);
 
-			console.log(serverUrl);
+			console.log("Server URL in home page:", serverUrl);
+			console.log("Full URL being requested:", `${serverUrl}links`);
 
 			if (linkInput === "") {
 				toast.warning("Please enter a link!");

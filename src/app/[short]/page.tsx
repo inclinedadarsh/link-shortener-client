@@ -22,9 +22,10 @@ export default function RedirectPage() {
 	useEffect(() => {
 		const fetchLink = async () => {
 			try {
-				const response = await axios.get(
-					`${serverUrl}links/${params.short}`,
-				);
+				const fullUrl = `${serverUrl}links/${params.short}`;
+				console.log("Server URL in redirect page:", serverUrl);
+				console.log("Full URL being requested:", fullUrl);
+				const response = await axios.get(fullUrl);
 				const data: LinkResponse = response.data;
 				window.location.href = data.link;
 			} catch (err) {
