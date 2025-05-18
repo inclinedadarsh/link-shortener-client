@@ -39,6 +39,7 @@ export default function Home() {
 					body: JSON.stringify({ link: linkInput }),
 				},
 			);
+			console.log("Server URL:", process.env.NEXT_PUBLIC_SERVER_URL);
 			const data = await response.json();
 
 			setShortenedLink(
