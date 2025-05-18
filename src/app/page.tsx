@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import confetti from "canvas-confetti";
 import { ArrowUpRight, Copy, LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -36,9 +37,14 @@ export default function Home() {
 				body: JSON.stringify({ link: linkInput }),
 			});
 			const data = await response.json();
-			console.log(data);
 
 			setShortenedLink(`${window.location.origin}/${data.short}`);
+
+			confetti({
+				particleCount: 200,
+				spread: 70,
+				origin: { y: 0.6 },
+			});
 		} catch (err) {
 			// toast.error(err.message);
 		} finally {
