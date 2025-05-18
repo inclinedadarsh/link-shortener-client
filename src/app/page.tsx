@@ -10,6 +10,11 @@ import { z } from "zod";
 
 const linkSchema = z.string().url();
 
+// biome-ignore lint/style/noNonNullAssertion: <explanation>
+const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL!;
+// biome-ignore lint/style/noNonNullAssertion: <explanation>
+const websiteUrl = process.env.NEXT_PUBLIC_WEBSITE_URL!;
+
 export default function Home() {
 	const [linkInput, setLinkInput] = useState<z.infer<typeof linkSchema>>("");
 	const [isLoading, setIsLoading] = useState(false);
@@ -18,6 +23,8 @@ export default function Home() {
 	const handleSubmit = async () => {
 		try {
 			setIsLoading(true);
+
+			console.log(serverUrl);
 
 			if (linkInput === "") {
 				toast.warning("Please enter a link!");
@@ -29,25 +36,16 @@ export default function Home() {
 				return;
 			}
 
-			const response = await fetch(
-				`${process.env.NEXT_PUBLIC_SERVER_URL}links`,
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({ link: linkInput }),
+			const response = await fetch(`${serverUrl}links`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
 				},
-			);
-			console.log("Server URL:", process.env.NEXT_PUBLIC_SERVER_URL);
+				body: JSON.stringify({ link: linkInput }),
+			});
 			const data = await response.json();
 
-			setShortenedLink(
-				`${
-					// biome-ignore lint/style/noNonNullAssertion: <explanation>
-					process.env.NEXT_PUBLIC_WEBSITE_URL!
-				}/${data.short}`,
-			);
+			setShortenedLink(`${websiteUrl}/${data.short}`);
 
 			confetti({
 				particleCount: 200,

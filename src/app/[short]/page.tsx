@@ -10,6 +10,9 @@ interface LinkResponse {
 	link: string;
 }
 
+// biome-ignore lint/style/noNonNullAssertion: <explanation>
+const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL!;
+
 export default function RedirectPage() {
 	const params = useParams();
 	const [isLoading, setIsLoading] = useState(true);
@@ -19,7 +22,7 @@ export default function RedirectPage() {
 		const fetchLink = async () => {
 			try {
 				const response = await fetch(
-					`${process.env.NEXT_PUBLIC_SERVER_URL}links/${params.short}`,
+					`${serverUrl}links/${params.short}`,
 				);
 				if (!response.ok) {
 					throw new Error("Link not found!");
