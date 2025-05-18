@@ -24,7 +24,9 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body className="font-sans antialiased">{children}</body>
+			<body className="font-sans antialiasedm max-w-2xl px-5 md:px-0 mx-auto">
+				{children}
+			</body>
 		</html>
 	);
 }
